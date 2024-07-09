@@ -1,0 +1,18 @@
+import express from "express";
+import { resendOTP, vendorGetProfile, vendorLogin, vendorPhoneLogin, vendorSignup, vendorVerifyPhoneOtp, verifyVendorEmail } from "../controllers/vendorProfileController.js";
+
+const router = express.Router();
+
+router.route("/vendor/signup").post(vendorSignup);
+router.route("/verify/vendor/email").post(verifyVendorEmail);
+router.route("/resend/vendor/otp").post(resendOTP);
+router.route('/vendor/login').post(vendorLogin)
+router.route('/vendor/phone/login/:vendorId').post(vendorPhoneLogin)
+router.route('/verify/admin/phone/otp').post(vendorVerifyPhoneOtp)
+router.route('/get/vendor/profile/:vendorId').get(vendorGetProfile)
+
+
+
+
+
+export default router;
