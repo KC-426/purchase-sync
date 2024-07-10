@@ -27,6 +27,7 @@ import vendorProfileRoute from "./routes/vendorProfileRoute.js"
 import adminRoute from "./routes/adminRoutes.js"
 import userRequestRoute from "./routes/userRequestRoute.js"
 import cartRoute from "./routes/cartRoutes.js"
+import orderRoute from "./routes/orderRoutes.js"
 
 app.use('/api/v1', userRouter)
 app.use('/api/v1', userSubscribeRoute)
@@ -35,6 +36,7 @@ app.use('/api/v1', vendorProfileRoute)
 app.use('/api/v1', adminRoute)
 app.use("/api/v1", userRequestRoute)
 app.use("/api/v1", cartRoute)
+app.use("/api/v1", orderRoute)
 
 // app.use("/", (req, res) => {
 //   console.log("Working ");
