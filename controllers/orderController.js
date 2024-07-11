@@ -9,7 +9,7 @@ const instance = new Razorpay({
 });
 
 export const createOrder = async (req, res) => {
-  const { userId, productId, location, costCenter } = req.body;
+  const { userId, productId, quantity, location, costCenter } = req.body;
 
   try {
     const user = await userModel.findById(userId);
@@ -37,6 +37,7 @@ export const createOrder = async (req, res) => {
     const orderData = new orderModel({
       userId: user._id,
       productId,
+      quantity,
       orderId: order.id,
       orderStatus: 'approval required',
       location,

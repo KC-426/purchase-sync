@@ -10,6 +10,10 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
+
+    quantity: {
+      type: Number,
+    },
     orderId: {
       type: String,
     },
@@ -19,7 +23,7 @@ const orderSchema = new mongoose.Schema(
     // },
     orderStatus: {
       type: String,
-      enum: ['approval required', 'approved', 'rejected'],
+      enum: ["approval required", "approved", "rejected"],
     },
     location: {
       type: String,
