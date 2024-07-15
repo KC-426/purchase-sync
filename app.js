@@ -28,6 +28,9 @@ import adminRoute from "./routes/adminRoutes.js"
 import userRequestRoute from "./routes/userRequestRoute.js"
 import cartRoute from "./routes/cartRoutes.js"
 import orderRoute from "./routes/orderRoutes.js"
+import orderApprovalRoute from "./routes/orderApprovalRoutes.js";
+import vendorStockRoute from "./routes/vendorStockRoutes.js"
+
 
 app.use('/api/v1', userRouter)
 app.use('/api/v1', userSubscribeRoute)
@@ -37,6 +40,9 @@ app.use('/api/v1', adminRoute)
 app.use("/api/v1", userRequestRoute)
 app.use("/api/v1", cartRoute)
 app.use("/api/v1", orderRoute)
+app.use("/api/v1", orderApprovalRoute)
+app.use("/api/v1", vendorStockRoute)
+
 
 // app.use("/", (req, res) => {
 //   console.log("Working ");

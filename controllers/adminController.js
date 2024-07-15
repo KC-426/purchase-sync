@@ -8,6 +8,8 @@ import nodemailer from "nodemailer";
 import twilio from "twilio";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 import vendorprofileModel from "../models/vendorprofileModel.js";
+import userModel from "../models/userModel.js"
+import orderModel from "../models/orderModel.js"
 
 const client = twilio(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 let otpTimestamp = {};
@@ -241,6 +243,61 @@ export const adminGetProfile = async (req, res) => {
     res
       .status(200)
       .json({ message: "Fetched profile successfully !", adminProfile });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+
+
+export const getAllUsersOnAdmin = async (req, res) => {
+  try {
+    const users = await userModel.find();
+
+    if (!users) {
+      return res.status(404).json({ message: "No user found !" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "All users fetched successfully !", users });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+
+export const getAllOrdersOnAdmin = async (req, res) => {
+  try {
+    const orders = await orderModel.find().populate(['userId', 'productId'])
+
+    if (!orders) {
+      return res.status(404).json({ message: "No order found !" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "All orders fetched successfully !", orders });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+
+export const getApprovedOrdersOnAdmin = async (req, res) => {
+  try {
+    const approvedOrders = await orderModel.find({ orderStatus: "approved" }).populate(['userId', 'productId'])
+
+    if (!approvedOrders) {
+      return res.status(404).json({ message: "No approved order found !" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "All orders fetched successfully !", approvedOrders });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error!" });

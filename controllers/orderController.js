@@ -2,6 +2,7 @@ import Razorpay from "razorpay";
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import productModel from "../models/productModel.js";
+import nodemailer from "nodemailer";
 
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -39,7 +40,7 @@ export const createOrder = async (req, res) => {
       productId,
       quantity,
       orderId: order.id,
-      orderStatus: 'approval required',
+      orderStatus: "approval required",
       location,
       costCenter,
       price,
@@ -58,42 +59,43 @@ export const createOrder = async (req, res) => {
   }
 };
 
-
 export const fetchOrder = async (req, res) => {
-    const { orderId } = req.params;
-  
-    try {
-      const order = await orderModel.findById(orderId).populate(['productId', "userId"])
-      if (!order) {
-        return res.status(404).json({ message: "No Order found!" });
-      }
-  
-      res.status(201).json({
-        success: true,
-        message: "Order fetched successfully",
-        order,
-      });
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Internal server error!" });
-    }
-  };
+  const { orderId } = req.params;
 
-  export const fetchAllOrders = async (req, res) => {  
-    try {
-      const orders = await orderModel.find().populate(['productId', "userId"])
-      if (!orders) {
-        return res.status(404).json({ message: "No Order found!" });
-      }
-  
-      res.status(201).json({
-        success: true,
-        message: "All Orders fetched successfully",
-        orders,
-      });
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({ message: "Internal server error!" });
+  try {
+    const order = await orderModel
+      .findById(orderId)
+      .populate(["productId", "userId"]);
+    if (!order) {
+      return res.status(404).json({ message: "No Order found!" });
     }
-  };
-  
+
+    res.status(201).json({
+      success: true,
+      message: "Order fetched successfully",
+      order,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+export const fetchAllOrders = async (req, res) => {
+  try {
+    const orders = await orderModel.find().populate(["productId", "userId"]);
+    if (!orders) {
+      return res.status(404).json({ message: "No Order found!" });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "All Orders fetched successfully",
+      orders,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
