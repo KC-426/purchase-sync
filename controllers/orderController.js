@@ -99,3 +99,32 @@ export const fetchAllOrders = async (req, res) => {
   }
 };
 
+export const editOrder = async (req, res) => {
+  const { orderId } = req.params;
+  try {
+    const updatedData = req.body;
+    const order = await orderModel
+      .findById(orderId)
+      .populate(["productId", "userId"]);
+    if (!order) {
+      return res.status(404).json({ message: "No Order found!" });
+    }
+
+    order.productId = updatedData.productId || order.productId;
+    order.quantity = updatedData.quantity || order.quantity;
+    order.location = updatedData.location || order.location;
+    order.costCenter = updatedData.costCenter || order.costCenter;
+    // order.orderStatus = updatedData.orderStatus || order.orderStatus
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+      order,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};

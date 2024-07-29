@@ -43,52 +43,53 @@ export const requestDemoRegister = async (req, res) => {
 };
 
 export const phoneLogin = async (req, res) => {
-    const { userId } = req.params;
-    try {
-      const findUser = await userModel.findById(userId);
-      if (!findUser) {
-        return res.status(404).json({ message: "User not found!" });
-      }
-  
-      let { phone } = req.body;
-  
-      if (!phone) {
-        return res.status(400).json({ message: "Phone number is required" });
-      }
-  
-      if (!phone.startsWith("+")) {
-        phone = `+91${phone}`;
-      }
-  
-      const phoneNumberObject = parsePhoneNumberFromString(phone);
-      if (!phoneNumberObject || !phoneNumberObject.isValid()) {
-        return res.status(400).json({ message: "Invalid phone number format" });
-      }
-  
-      const formattedPhone = phoneNumberObject.format("E.164");
-  
-      // Generate OTP
-      const otp = generateOTP();
-  
-      // Send OTP via SMS using Twilio
-      await client.messages.create({
-        body: `Your verification OTP code is ${otp}`,
-        from: process.env.PHONE_NUMBER,
-        to: formattedPhone,
-      });
-  
-      // Update user document with phone and otp
-      findUser.phone = formattedPhone;
-      findUser.otp = otp;
-      await findUser.save();
-  
-      return res.status(200).json({ message: "OTP sent successfully!", findUser });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: "Internal server error!" });
+  const { userId } = req.params;
+  try {
+    const findUser = await userModel.findById(userId);
+    if (!findUser) {
+      return res.status(404).json({ message: "User not found!" });
     }
-  };
-  
+
+    let { phone } = req.body;
+
+    if (!phone) {
+      return res.status(400).json({ message: "Phone number is required" });
+    }
+
+    if (!phone.startsWith("+")) {
+      phone = `+91${phone}`;
+    }
+
+    const phoneNumberObject = parsePhoneNumberFromString(phone);
+    if (!phoneNumberObject || !phoneNumberObject.isValid()) {
+      return res.status(400).json({ message: "Invalid phone number format" });
+    }
+
+    const formattedPhone = phoneNumberObject.format("E.164");
+
+    // Generate OTP
+    const otp = generateOTP();
+
+    // Send OTP via SMS using Twilio
+    await client.messages.create({
+      body: `Your verification OTP code is ${otp}`,
+      from: process.env.PHONE_NUMBER,
+      to: formattedPhone,
+    });
+
+    // Update user document with phone and otp
+    findUser.phone = formattedPhone;
+    findUser.otp = otp;
+    await findUser.save();
+
+    return res
+      .status(200)
+      .json({ message: "OTP sent successfully!", findUser });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
 
 export const verifyOtp = async (req, res) => {
   try {
@@ -146,7 +147,7 @@ export const loginUser = async (req, res) => {
       secure: true,
       sameSite: "Strict",
     });
-    
+
     res.status(200).json({ message: "login successfull !", user, token });
   } catch (err) {
     console.log(err);
@@ -154,49 +155,47 @@ export const loginUser = async (req, res) => {
   }
 };
 
-
 export const forgotPassword = async (req, res) => {
-    try {
-      const { email } = req.body;
-      const user = await userModel.findOne({ workEmail: email });
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found!" });
-      }
-  
-      // Generate reset token
-      const resetToken = crypto.randomBytes(32).toString("hex");
-      const resetTokenExpire = Date.now() + 3600000; // 1 hour expiry
-  
-      user.resetPasswordToken = resetToken;
-      user.resetPasswordExpire = resetTokenExpire;
-      await user.save();
-  
-      const resetUrl = `http://localhost:3000/api/v1/reset/password/${resetToken}`;
-  
-      // Send email
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS },
-      });
-  
-      const info = await transporter.sendMail({
-        from: `"Your Name" <${process.env.GMAIL_USER}>`,
-        to: email,
-        subject: "Password Reset",
-        text: `You are receiving this email because you (or someone else) have requested a password reset. Please click on the link to reset your password: ${resetUrl}`,
-        html: `<p>You are receiving this email because you (or someone else) have requested a password reset. Please click on the link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
-      });
-  
-      console.log("Message sent: %s", info.messageId);
-  
-      res.status(200).json({ message: "Email sent successfully!" });
-    } catch (err) {
-      console.log(err);
-      return res.status(500).json({ message: "Internal server error!" });
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({ workEmail: email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
     }
-  };
-  
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpire = Date.now() + 3600000; // 1 hour expiry
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = resetTokenExpire;
+    await user.save();
+
+    const resetUrl = `http://localhost:3000/api/v1/reset/password/${resetToken}`;
+
+    // Send email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS },
+    });
+
+    const info = await transporter.sendMail({
+      from: `"Your Name" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: "Password Reset",
+      text: `You are receiving this email because you (or someone else) have requested a password reset. Please click on the link to reset your password: ${resetUrl}`,
+      html: `<p>You are receiving this email because you (or someone else) have requested a password reset. Please click on the link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
+    });
+
+    console.log("Message sent: %s", info.messageId);
+
+    res.status(200).json({ message: "Email sent successfully!" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
 
 export const resetPassword = async (req, res) => {
   try {

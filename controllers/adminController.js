@@ -250,6 +250,17 @@ export const adminGetProfile = async (req, res) => {
 };
 
 
+export const logoutAdmin = async (req, res) => {
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+
+    res.status(200).json({ message: "logout successfull !" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
 
 export const getAllUsersOnAdmin = async (req, res) => {
   try {

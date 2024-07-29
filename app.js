@@ -30,6 +30,7 @@ import cartRoute from "./routes/cartRoutes.js"
 import orderRoute from "./routes/orderRoutes.js"
 import orderApprovalRoute from "./routes/orderApprovalRoutes.js";
 import vendorStockRoute from "./routes/vendorStockRoutes.js"
+import adminManageRolesRoute from "./routes/adminManageRolesRoutes.js";
 
 
 app.use('/api/v1', userRouter)
@@ -42,6 +43,8 @@ app.use("/api/v1", cartRoute)
 app.use("/api/v1", orderRoute)
 app.use("/api/v1", orderApprovalRoute)
 app.use("/api/v1", vendorStockRoute)
+app.use("/api/v1", adminManageRolesRoute)
+
 
 
 // app.use("/", (req, res) => {
