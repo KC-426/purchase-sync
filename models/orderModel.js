@@ -23,7 +23,7 @@ const orderSchema = new mongoose.Schema(
     // },
     orderStatus: {
       type: String,
-      enum: ["approval required", "approved", "rejected"],
+      enum: ["approval required", "approved", "rejected", "delivered"],
     },
     location: {
       type: String,

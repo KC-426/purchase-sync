@@ -31,6 +31,8 @@ import orderRoute from "./routes/orderRoutes.js"
 import orderApprovalRoute from "./routes/orderApprovalRoutes.js";
 import vendorStockRoute from "./routes/vendorStockRoutes.js"
 import adminManageRolesRoute from "./routes/adminManageRolesRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js"
+import ebookRoutes from "./routes/ebookRoutes.js"
 
 
 app.use('/api/v1', userRouter)
@@ -44,6 +46,10 @@ app.use("/api/v1", orderRoute)
 app.use("/api/v1", orderApprovalRoute)
 app.use("/api/v1", vendorStockRoute)
 app.use("/api/v1", adminManageRolesRoute)
+app.use("/api/v1", blogRoutes)
+app.use("/api/v1", ebookRoutes)
+
+
 
 
 

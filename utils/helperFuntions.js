@@ -48,6 +48,33 @@ import {
       throw new Error("An error occurred while uploading the files.");
     }
   }
+
+  export async function uploadBlogImageToFirebaseStorage(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).send({ error: "Image file is required." });
+      }
+  
+      const dateTime = giveCurrentDateTime();
+      const uniqueFilename = `${uuidv4()}_${req.file.originalname}_${dateTime}`;
+      const storageRef = ref(storage, `blog-images/${uniqueFilename}`);
+      const metadata = { contentType: req.file.mimetype };
+  
+      const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+  
+      console.log("File successfully uploaded");
+  
+      return {
+        name: req.file.originalname,
+        path: storageRef.fullPath,
+        url: downloadURL,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error("An error occurred while uploading the file.");
+    }
+  }
   
   export async function deleteImagesFromFirebaseStorage(images) {
     try {
@@ -76,6 +103,34 @@ import {
     }
   }
   
+
+  export async function uploadEbookToFirebaseStorage(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).send({ error: "Ebook file is required." });
+      }
+  
+      const dateTime = giveCurrentDateTime();
+      const uniqueFilename = `${uuidv4()}_${req.file.originalname}_${dateTime}`;
+      const storageRef = ref(storage, `ebooks/${uniqueFilename}`);
+      const metadata = { contentType: req.file.mimetype };
+  
+      const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+  
+      console.log("File successfully uploaded");
+  
+      return {
+        name: req.file.originalname,
+        path: storageRef.fullPath,
+        url: downloadURL,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error("An error occurred while uploading the file.");
+    }
+  }
+
   const giveCurrentDateTime = () => {
     const today = new Date();
     const date =

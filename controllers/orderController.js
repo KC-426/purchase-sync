@@ -88,7 +88,7 @@ export const fetchAllOrders = async (req, res) => {
       return res.status(404).json({ message: "No Order found!" });
     }
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "All Orders fetched successfully",
       orders,
@@ -114,7 +114,6 @@ export const editOrder = async (req, res) => {
     order.quantity = updatedData.quantity || order.quantity;
     order.location = updatedData.location || order.location;
     order.costCenter = updatedData.costCenter || order.costCenter;
-    // order.orderStatus = updatedData.orderStatus || order.orderStatus
 
     await order.save();
 
@@ -122,6 +121,26 @@ export const editOrder = async (req, res) => {
       success: true,
       message: "Order updated successfully",
       order,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+export const fetchPreviousOrders = async (req, res) => {
+  try {
+    const prevOrders = await orderModel
+      .find({ orderStatus: "delivered" })
+      .populate(["productId", "userId"]);
+    if (!prevOrders) {
+      return res.status(404).json({ message: "No Previous Orders found!" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "All Previous Orders fetched successfully",
+      prevOrders,
     });
   } catch (err) {
     console.error(err);
