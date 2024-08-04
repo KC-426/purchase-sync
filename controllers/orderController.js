@@ -25,7 +25,6 @@ export const createOrder = async (req, res) => {
 
     const price = product.regularPrice;
 
-    // Create Razorpay order
     const options = {
       amount: price * 100, // Razorpay amount is in paise
       currency: "INR",
@@ -48,6 +47,9 @@ export const createOrder = async (req, res) => {
 
     await orderData.save();
 
+    product.orderCount += 1;
+    await product.save();
+
     res.status(201).json({
       success: true,
       message: "Razorpay order created successfully",
@@ -58,6 +60,7 @@ export const createOrder = async (req, res) => {
     return res.status(500).json({ message: "Internal server error!" });
   }
 };
+
 
 export const fetchOrder = async (req, res) => {
   const { orderId } = req.params;
@@ -131,7 +134,7 @@ export const editOrder = async (req, res) => {
 export const fetchPreviousOrders = async (req, res) => {
   try {
     const prevOrders = await orderModel
-      .find({ orderStatus: "delivered" })
+      .find({ orderStatus: ["delivered", "approved", "intransit"] })
       .populate(["productId", "userId"]);
     if (!prevOrders) {
       return res.status(404).json({ message: "No Previous Orders found!" });
@@ -142,6 +145,61 @@ export const fetchPreviousOrders = async (req, res) => {
       message: "All Previous Orders fetched successfully",
       prevOrders,
     });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+
+export const updateTracking = async (req, res) => {
+  try {
+    const { orderId, tracking } = req.body;
+
+    const order = await orderModel.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "No order found" });
+    }
+
+    tracking.forEach(track => {
+      const { orderStatus, location } = track;
+      if (orderStatus && location) {
+        order.tracking.push({ orderStatus, location });
+      }
+    });
+
+    const latestTracking = tracking[tracking.length - 1];
+    if (latestTracking) {
+      order.orderStatus = latestTracking.orderStatus;
+    }
+
+    await order.save();
+
+
+
+    return res.status(200).json({
+      success: true,
+      message: "Order tracking updated successfully",
+      order,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const fetchTracking = async (req, res) => {
+  const { orderId } = req.params
+  try {
+   const order = await orderModel.findById(orderId)
+   if(!order) {
+    return res.status(404).json({ message: "No order found !"})
+   }
+
+   res.status(200).json({ tracking: order.tracking });
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Internal server error!" });

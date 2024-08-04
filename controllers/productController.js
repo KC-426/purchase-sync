@@ -95,12 +95,12 @@ export const addProduct = async (req, res) => {
     res.status(201).json({ message: "Product added successfully!", result });
   } catch (err) {
     if (err.code === 11000) {
-        const duplicatedField = Object.keys(err.keyPattern)[0];
-        const duplicatedValue = err.keyValue[duplicatedField];
-        return res.status(400).json({
-          message: `Duplicate key error: ${duplicatedField} '${duplicatedValue}' already exists!`,
-        });
-      }
+      const duplicatedField = Object.keys(err.keyPattern)[0];
+      const duplicatedValue = err.keyValue[duplicatedField];
+      return res.status(400).json({
+        message: `Duplicate key error: ${duplicatedField} '${duplicatedValue}' already exists!`,
+      });
+    }
     console.log(err);
     return res.status(500).json({ message: "Internal server error!" });
   }
@@ -140,70 +140,75 @@ export const fetchProductyId = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
-    const { productId } = req.params;
-  
-    try {
-      const updatedData = req.body;
-  
-      if (!updatedData) {
-        return res.status(400).json({ message: "No data provided for update!" });
-      }
-  
-      const product = await productModel.findById(productId);
-  
-      if (!product) {
-        return res.status(404).json({ message: "Product not found!" });
-      }
-  
-      if (req.files && req.files.length > 0) {
-        if (product.image && product.image.length > 0) {
-          await deleteImagesFromFirebaseStorage(product.image);
-        }
-  
-        const uploadedImages = await uploadImagesToFirebaseStorage(req, res);
-        product.image = uploadedImages;
-      }
-  
-      product.productName = updatedData.productName || product.productName;
-      product.productCategory = updatedData.productCategory || product.productCategory;
-      product.modelNumber = updatedData.modelNumber || product.modelNumber;
-      product.stockKeepingUnit = updatedData.stockKeepingUnit || product.stockKeepingUnit;
-      product.description = updatedData.description || product.description;
-      product.brand = updatedData.brand || product.brand;
-      product.barcode = updatedData.barcode || product.barcode;
-      product.regularPrice = updatedData.regularPrice || product.regularPrice;
-      product.salePrice = updatedData.salePrice || product.salePrice;
-      product.currency = updatedData.currency || product.currency;
-      product.colors = updatedData.colors || product.colors;
-      product.weight = updatedData.weight || product.weight;
-      product.dimensions = updatedData.dimensions || product.dimensions;
-      product.shippingClass = updatedData.shippingClass || product.shippingClass;
-      product.handlingTime = updatedData.handlingTime || product.handlingTime;
-      product.stockQuantity = updatedData.stockQuantity || product.stockQuantity;
-      product.minOrderQuantity = updatedData.minOrderQuantity || product.minOrderQuantity;
-      product.maxOrderQuantity = updatedData.maxOrderQuantity || product.maxOrderQuantity;
-      product.reorderLevel = updatedData.reorderLevel || product.reorderLevel;
-      product.vendorName = updatedData.vendorName || product.vendorName;
-      product.vendorContact = updatedData.vendorContact || product.vendorContact;
-      product.keywords = updatedData.keywords || product.keywords;
-      product.warrantyInformation = updatedData.warrantyInformation || product.warrantyInformation;
-  
-      await product.save();
-  
-      res.status(200).json({ message: "Product updated successfully!", product });
-    } catch (err) {
-      if (err.code === 11000) {
-        const duplicatedField = Object.keys(err.keyPattern)[0];
-        const duplicatedValue = err.keyValue[duplicatedField];
-        return res.status(400).json({
-          message: `Duplicate key error: ${duplicatedField} '${duplicatedValue}' already exists!`,
-        });
-      }
-      console.log(err);
-      return res.status(500).json({ message: "Internal server error!" });
+  const { productId } = req.params;
+
+  try {
+    const updatedData = req.body;
+
+    if (!updatedData) {
+      return res.status(400).json({ message: "No data provided for update!" });
     }
-  };
-  
+
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found!" });
+    }
+
+    if (req.files && req.files.length > 0) {
+      if (product.image && product.image.length > 0) {
+        await deleteImagesFromFirebaseStorage(product.image);
+      }
+
+      const uploadedImages = await uploadImagesToFirebaseStorage(req, res);
+      product.image = uploadedImages;
+    }
+
+    product.productName = updatedData.productName || product.productName;
+    product.productCategory =
+      updatedData.productCategory || product.productCategory;
+    product.modelNumber = updatedData.modelNumber || product.modelNumber;
+    product.stockKeepingUnit =
+      updatedData.stockKeepingUnit || product.stockKeepingUnit;
+    product.description = updatedData.description || product.description;
+    product.brand = updatedData.brand || product.brand;
+    product.barcode = updatedData.barcode || product.barcode;
+    product.regularPrice = updatedData.regularPrice || product.regularPrice;
+    product.salePrice = updatedData.salePrice || product.salePrice;
+    product.currency = updatedData.currency || product.currency;
+    product.colors = updatedData.colors || product.colors;
+    product.weight = updatedData.weight || product.weight;
+    product.dimensions = updatedData.dimensions || product.dimensions;
+    product.shippingClass = updatedData.shippingClass || product.shippingClass;
+    product.handlingTime = updatedData.handlingTime || product.handlingTime;
+    product.stockQuantity = updatedData.stockQuantity || product.stockQuantity;
+    product.minOrderQuantity =
+      updatedData.minOrderQuantity || product.minOrderQuantity;
+    product.maxOrderQuantity =
+      updatedData.maxOrderQuantity || product.maxOrderQuantity;
+    product.reorderLevel = updatedData.reorderLevel || product.reorderLevel;
+    product.vendorName = updatedData.vendorName || product.vendorName;
+    product.vendorContact = updatedData.vendorContact || product.vendorContact;
+    product.keywords = updatedData.keywords || product.keywords;
+    product.warrantyInformation =
+      updatedData.warrantyInformation || product.warrantyInformation;
+
+    await product.save();
+
+    res.status(200).json({ message: "Product updated successfully!", product });
+  } catch (err) {
+    if (err.code === 11000) {
+      const duplicatedField = Object.keys(err.keyPattern)[0];
+      const duplicatedValue = err.keyValue[duplicatedField];
+      return res.status(400).json({
+        message: `Duplicate key error: ${duplicatedField} '${duplicatedValue}' already exists!`,
+      });
+    }
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
 export const deleteProduct = async (req, res) => {
   const { productId } = req.params;
   try {
@@ -464,17 +469,17 @@ export const filterProductByColours = async (req, res) => {
 
 export const fetchProductCategories = async (req, res) => {
   try {
-    const products = await productModel.find({}, 'productCategory');
+    const products = await productModel.find({}, "productCategory");
     const categories = new Set();
 
-    products.forEach(product => {
-      product.productCategory.forEach(category => {
+    products.forEach((product) => {
+      product.productCategory.forEach((category) => {
         categories.add(category);
       });
     });
 
     const uniqueCategories = Array.from(categories);
-    console.log(uniqueCategories)
+    console.log(uniqueCategories);
 
     res.status(200).json({
       message: "Product categories fetched successfully!",
@@ -482,6 +487,19 @@ export const fetchProductCategories = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: "Internal server error!" });
-  }
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+export const getFrequentlyOrderedProducts = async (req, res) => {
+  try {
+    const products = await productModel
+      .find()
+      .sort({ orderCount: -1 })
+      .limit(10);
+    res.status(200).json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error!" });
+  }
 };

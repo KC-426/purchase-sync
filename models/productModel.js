@@ -63,9 +63,11 @@ const productSchema = new mongoose.Schema(
       min: 1,
       max: 5,
     },
-    colors: [{
-      type: String,
-    }],
+    colors: [
+      {
+        type: String,
+      },
+    ],
     // Shipping Details
     weight: {
       type: String,
@@ -114,8 +116,12 @@ const productSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    orderCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Product", productSchema);
+export default mongoose.model("Product", productSchema);

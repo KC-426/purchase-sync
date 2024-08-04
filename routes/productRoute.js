@@ -13,7 +13,8 @@ import {
   filterProductByCategory,
   filterProductByColours,
   filterProductByPriceRange,
-  fetchProductCategories
+  fetchProductCategories,
+  getFrequentlyOrderedProducts
 } from "../controllers/productController.js";
 
 const router = express.Router();
@@ -37,6 +38,8 @@ router.route('/filter-product-by-category').get(filterProductByCategory)
 router.route('/filter-product-by-price-range').get(filterProductByPriceRange)
 router.route('/filter-product-by-color').get(filterProductByColours)
 router.route('/fetch/product/categories').get(fetchProductCategories)
+router.route('/frequently/ordered/products').get(getFrequentlyOrderedProducts)
+
 
 
 

@@ -1,5 +1,21 @@
 import mongoose from "mongoose";
 
+const trackingSchema = new mongoose.Schema(
+  {
+    orderStatus: {
+      type: String,
+    },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+    location: {
+      type: String,
+    },
+  },
+  { _id: false } 
+);
+
 const orderSchema = new mongoose.Schema(
   {
     userId: {
@@ -10,20 +26,23 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
-
     quantity: {
       type: Number,
     },
     orderId: {
       type: String,
+      required: true,
+      unique: true,
     },
-    // userApproval: {
-    //   type: String,
-    //   enum: ['approve', 'reject'],
-    // },
     orderStatus: {
       type: String,
-      enum: ["approval required", "approved", "rejected", "delivered"],
+      enum: [
+        "approval required",
+        "approved",
+        "rejected",
+        "delivered",
+        "intransit",
+      ],
     },
     location: {
       type: String,
@@ -34,8 +53,11 @@ const orderSchema = new mongoose.Schema(
     price: {
       type: Number,
     },
+    tracking: [trackingSchema],
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Order", orderSchema);
+const Order = mongoose.model("Order", orderSchema);
+
+export default Order;
