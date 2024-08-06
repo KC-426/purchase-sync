@@ -1,24 +1,30 @@
 import express from "express";
-import { adminSignup, verifyAdminEmail, resendOTP, adminLogin, adminVerifyPhoneOtp, adminGetProfile, adminPhoneLogin, getAllUsersOnAdmin, getAllOrdersOnAdmin, getApprovedOrdersOnAdmin, logoutAdmin } from "../controllers/adminController.js";
+import {
+  adminSignup,
+  verifyAdminEmail,
+  resendOTP,
+  adminLogin,
+  adminVerifyPhoneOtp,
+  adminGetProfile,
+  adminPhoneLogin,
+  getAllUsersOnAdmin,
+  getAllOrdersOnAdmin,
+  getApprovedOrdersOnAdmin,
+  logoutAdmin,
+} from "../controllers/adminController.js";
 
 const router = express.Router();
 
 router.route("/admin/signup").post(adminSignup);
 router.route("/verify/admin/email").post(verifyAdminEmail);
 router.route("/resend/admin/otp").post(resendOTP);
-router.route('/admin/login').post(adminLogin)
-router.route('/admin/phone/login/:adminId').post(adminPhoneLogin)
-router.route('/verify/admin/phone/otp').post(adminVerifyPhoneOtp)
-router.route('/get/admin/profile/:adminId').get(adminGetProfile)
-router.route('/admin/logout').post(logoutAdmin)
-router.route('/get-users-on-admin').get(getAllUsersOnAdmin)
-router.route('/get-orders-on-admin').get(getAllOrdersOnAdmin)
-router.route('/get-approved-orders-on-admin').get(getApprovedOrdersOnAdmin)
+router.route("/admin/login").post(adminLogin);
+router.route("/admin/phone/login/:adminId").post(adminPhoneLogin);
+router.route("/verify/admin/phone/otp").post(adminVerifyPhoneOtp);
+router.route("/get/admin/profile/:adminId").get(adminGetProfile);
+router.route("/admin/logout").post(logoutAdmin);
+router.route("/get-users-on-admin").get(getAllUsersOnAdmin);
+router.route("/get-orders-on-admin").get(getAllOrdersOnAdmin);
+router.route("/get-approved-orders-on-admin").get(getApprovedOrdersOnAdmin);
 
-
-
-
-
-
-
-export default router;
+export default router;

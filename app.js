@@ -33,6 +33,11 @@ import vendorStockRoute from "./routes/vendorStockRoutes.js"
 import adminManageRolesRoute from "./routes/adminManageRolesRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js"
 import ebookRoutes from "./routes/ebookRoutes.js"
+import paymentInvoiceRoutes from "./routes/paymentInvoiceRoutes.js"
+import paymentRoutes from "./routes/paymentRoute.js"
+import analyticsRoutes from "./routes/analyticsRoutes.js"
+
+
 
 
 app.use('/api/v1', userRouter)
@@ -48,15 +53,20 @@ app.use("/api/v1", vendorStockRoute)
 app.use("/api/v1", adminManageRolesRoute)
 app.use("/api/v1", blogRoutes)
 app.use("/api/v1", ebookRoutes)
+app.use("/api/v1", paymentInvoiceRoutes)
+app.use("/api/v1", paymentRoutes)
+app.use("/api/v1", analyticsRoutes)
 
 
 
 
 
-// app.use("/", (req, res) => {
-//   console.log("Working ");
-//   res.send("WORKING");
-// });
+
+
+app.use("/", (req, res) => {
+  console.log("Working ");
+  res.send("WORKING");
+});
 
 mongoose
   .connect(MONGODB_URI)
