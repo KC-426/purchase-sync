@@ -151,7 +151,6 @@ export const fetchPreviousOrders = async (req, res) => {
   }
 };
 
-
 export const updateTracking = async (req, res) => {
   try {
     const { orderId, tracking } = req.body;

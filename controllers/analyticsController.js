@@ -230,3 +230,42 @@ export const yearlySales = async (req, res) => {
     res.status(500).json({ message: "Internal server error!" });
   }
 }
+
+//////////////////////////////////////   FINANCIAL OFFERING   /////////////////////////////////////
+
+export const searchProductByName = async (req, res) => {
+  try {
+    const { search = ""} = req.query
+
+    if(search == "") {
+      const products = await Product.find().sort({ createdAt: -1 });
+      return res.status(200).json({
+        success: true,
+        message: "All products Fetched !!",
+        products
+      });
+    }
+
+    let productData = []
+     let productName = await Product.find({
+      productName: {
+        $regex: search, 
+        $options: "i"
+      }
+     }).sort({ createdAt: -1 });
+
+     if(productName.length > 0){
+      for(let product of productName) {
+        productData.push(product)
+      }
+     }    
+
+    res.status(200).json({
+      message: "Product by name fetched successfully!",
+      productData
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error!" });
+  }
+};

@@ -279,7 +279,6 @@ export const getAllUsersOnAdmin = async (req, res) => {
   }
 };
 
-
 export const getAllOrdersOnAdmin = async (req, res) => {
   try {
     const orders = await orderModel.find().populate(['userId', 'productId'])
@@ -309,6 +308,43 @@ export const getApprovedOrdersOnAdmin = async (req, res) => {
     res
       .status(200)
       .json({ message: "All orders fetched successfully !", approvedOrders });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+
+
+export const getDeliveredOrdersOnAdmin = async (req, res) => {
+  try {
+    const deliveredOrders = await orderModel.find({ orderStatus: "delivered" }).populate(['userId', 'productId'])
+
+    if (!deliveredOrders) {
+      return res.status(404).json({ message: "No delivered order found !" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "All delivered orders fetched successfully !", deliveredOrders });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
+
+export const getActiveOrdersOnAdmin = async (req, res) => {
+  try {
+    const activeOrders = await orderModel.find({ orderStatus: ["approved", "intransit"] }).populate(['userId', 'productId'])
+
+    if (!activeOrders) {
+      return res.status(404).json({ message: "No active order found !" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "All active orders fetched successfully !", activeOrders });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error!" });

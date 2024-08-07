@@ -3,6 +3,7 @@ import {
   fetchTopProducts,
   getTodayOrders,
   newCustomersToday,
+  searchProductByName,
   todayTotalSales,
   totalOrdersToday,
   totalProductsSoldToday,
@@ -18,6 +19,9 @@ router.route("/today/total/orders").get(totalOrdersToday);
 router.route("/today/total/products/sold").get(totalProductsSoldToday);
 router.route("/new/customers/today").get(newCustomersToday);
 router.route("/get/yearly/sales").get(yearlySales);
+router.route("/search-product-by-name").get(searchProductByName);
+
+
 
 
 export default router;
