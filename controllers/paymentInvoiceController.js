@@ -178,3 +178,23 @@ export const consolidatedBillingInvoices = async (req, res) => {
     return res.status(500).json({ message: "Internal server error!" });
   }
 };
+
+export const consolidatedSingleBillingInvoice = async (req, res) => {
+  const { invoiceId } = req.params
+  try {
+    const invoice = await paymentInvoiceModel
+      .findById(invoiceId)
+      .populate(["userId", "productId"]);
+    if (!invoice || invoice.length === 0) {
+      return res.status(404).json({ message: "No invoice found " });
+    }
+
+    res.status(200).json({
+      message: "Invoice fetched successfully  !",
+      invoice,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
