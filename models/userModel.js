@@ -4,24 +4,32 @@ const userModel = new mongoose.Schema(
   {
     firstName: {
       type: String,
-    //   required: true,
+      //   required: true,
     },
     lastName: {
       type: String,
-    //   required: true,
+      //   required: true,
     },
     companyName: {
       type: String,
-    //   required: true,
+      //   required: true,
     },
     workEmail: {
       type: String,
-    //   required: true,
+      //   required: true,
     },
     phone: {
       type: String,
-    //   required: true,
+      //   required: true,
     },
+    preferredDate: {
+      type: Date,
+    },
+    preferredTime: {
+      type: String,
+    },
+    averageMonthlySpend: { type: String, required: true },
+    vendorsOrderedFrom: { type: String, required: true },
     password: {
       type: String,
     },
@@ -41,4 +49,4 @@ const userModel = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("User", userModel);
+export default mongoose.model("User", userModel);

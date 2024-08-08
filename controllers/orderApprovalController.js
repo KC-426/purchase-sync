@@ -8,7 +8,6 @@ export const sendVendorApprovalRequest = async (req, res) => {
     const { orderId } = req.body;
   
     try {
-      // Find the order by orderId
       const order = await orderModel.findById(orderId).populate("productId");
       if (!order) {
         return res.status(404).json({ message: "No order found!" });
@@ -22,7 +21,6 @@ export const sendVendorApprovalRequest = async (req, res) => {
       }
       console.log(product);
   
-      // Extract vendor information from the product
       const vendorContact = product.vendorContact;
       if (!vendorContact) {
         return res

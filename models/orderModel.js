@@ -42,8 +42,7 @@ const orderSchema = new mongoose.Schema(
         "rejected",
         "delivered",
         "intransit",
-        "shipped",
-        "pending"     
+        "Shipped",
       ],
     },
     location: {

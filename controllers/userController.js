@@ -22,25 +22,68 @@ const generateOTP = () => {
 
 export const requestDemoRegister = async (req, res) => {
   try {
-    const { firstName, lastName, companyName, workEmail, phone } = req.body;
-
-    const newRequest = await userModel({
+    const {
       firstName,
       lastName,
       companyName,
       workEmail,
-      phone,
+      phoneNumber,
+      preferredDate,
+      preferredTime,
+    } = req.body;
+
+    const newDemoRequest = new userModel({
+      firstName,
+      lastName,
+      companyName,
+      workEmail,
+      phoneNumber,
+      preferredDate,
+      preferredTime,
     });
 
-    const result = await newRequest.save();
-    return res
-      .status(201)
-      .json({ message: "Your demo request added successfully !", result });
+    const result = await newDemoRequest.save();
+    return res.status(201).json({
+      message: "Thank you for your demo request! We will contact you soon.",
+      result,
+    });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Internal server error !" });
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
   }
 };
+
+export const watchDemoVideo = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    const { workEmail, averageMonthlySpend, vendorsOrderedFrom } = req.body;
+
+    if (!workEmail || !averageMonthlySpend || !vendorsOrderedFrom) {
+      return res.status(400).json({ message: "All fields are required!" });
+    }
+
+    user.workEmail = workEmail; 
+    user.averageMonthlySpend = averageMonthlySpend;
+    user.vendorsOrderedFrom = vendorsOrderedFrom;
+
+    const result = await user.save();
+
+    return res.status(201).json({
+      message: "Thank you for your interest! You can now watch the demo video.",
+      result,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal server error!" });
+  }
+};
+
 
 export const phoneLogin = async (req, res) => {
   const { userId } = req.params;
@@ -118,7 +161,6 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userModel.findOne({ workEmail: email });
-    console.log(user.password);
 
     if (!user) {
       return res
@@ -240,21 +282,3 @@ export const logoutUser = async (req, res) => {
     return res.status(500).json({ message: "Internal server error!" });
   }
 };
-
-// export const fotgotPassword = async (req, res) => {
-//   try {
-
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: "Internal server error!" });
-//   }
-// };
-
-// export const resetPassword = async (req, res) => {
-//   try {
-
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: "Internal server error!" });
-//   }
-// };
